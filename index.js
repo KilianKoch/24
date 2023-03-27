@@ -1,28 +1,30 @@
 const fs = require("fs")
 
 
-function CalcSol(...input){
-    if(input.length != 4) throw "Too many or few Numbers!";
+function CalcSol(input, number){
+    //if(input.length != 4) throw "Too many or few Numbers!";
+    /*
     for(let i = 0; i < input.length; i++){
         if(!Number.isInteger(input[i])) throw `The ${i + 1} input is not a whole number!`;
         if(input[i] < 0 || input[i] > 10) throw `The ${i + 1} number is not between 1 and 10!`;
     }
+    */
 
     // Input = [1,2,3,4]
 
-    let res = Calc24(input,input.join(","), 24);
+    let res = Calc24(input,input.join(","), number);
 
     if(res.bool){
         return res.str;
     }
 
-    for(let i = 1; i <= 50; i++){
+    for(let i = 1; i <= number*2; i++){
         let str = "";
-        let resOben = Calc24(input,input.join(","), 24 + i);
+        let resOben = Calc24(input,input.join(","), number + i);
         if(resOben.bool){
             str += resOben.str
         }
-        let resUnten = Calc24(input,input.join(","), 24 - i);
+        let resUnten = Calc24(input,input.join(","), number - i);
         if(resUnten.bool){
             if(resOben.bool){
                 str += "\n" + resUnten.str;
@@ -195,9 +197,9 @@ function comb(input,i,j,op){
     return {res: res, str: str.slice(0, -1)};
 }
 
-const Input = [ 8,5,10,10 ];
+const Input = [ 24,24,24,24 ];
 
-console.log(CalcSol(...Input))
+//console.log(CalcSol(...Input))
 
 /*
 for(let i = 1; i <= 10; i++){
@@ -206,19 +208,26 @@ for(let i = 1; i <= 10; i++){
 */
 
 let file = ""
-let analyzed = []
-/*
-for(let i = 0; i < 10_000; i++){
-    let array = ConvertNumber(i);
-    if(true || !Contains(analyzed,array)){
-        file = file + "\n" + CalcSol(...array);
-        console.log(i);
-        analyzed.push(array);
+
+let maxNumb = 12;
+
+
+
+for (let i = 1; i <= maxNumb; i++) {
+    for (let j = i; j <= maxNumb; j++) {
+        for (let k = j; k <= maxNumb; k++) {
+            for (let l = k; l <= maxNumb; l++) {
+                for (let m = l; m <= maxNumb; m++) {
+                    file = file + "\n\n" + CalcSol([i,j,k,l,m],36);
+                    console.log(i,j,k,l,m);
+                }
+            }
+        }
     }
 }
 
-fs.writeFileSync("resAll.txt",file,"utf-8")
-*/
+fs.writeFileSync("Lösungen/res36-12-5.txt",file,"utf-8")
+
 function ConvertNumber(num){
     let First = Math.round(num - 10*Math.floor(num/10));
     let Second = Math.round(num/10 - 10*Math.floor(num/100) - First/10);
@@ -228,10 +237,15 @@ function ConvertNumber(num){
 }
 
 function Contains(List, array){
-    let str = JSON.stringify(array);
     for(let i = 0; i < List.length; i++){
-        if(JSON.stringify(List[i]) == str){
-            return true
+        let bool = true;
+        for (let j = 0; j < array.length; j++) {
+            if(array[j] != List[i][j]){
+                bool = false;
+            }
+        }
+        if(bool){
+            return true;
         }
     }
     return false;
